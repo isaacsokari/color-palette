@@ -1,19 +1,27 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, RefreshControl } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  RefreshControl,
+  TouchableOpacity,
+} from 'react-native';
 
 import PalettePreview from '../components/PalettePreview';
 
 import { SOLARIZED, RAINBOW, FRONTEND_MASTERS } from '../constants/colors';
 
-const COLOR_PALETTES = [
-  { paletteName: 'Solarized', colors: SOLARIZED },
-  { paletteName: 'Frontend Masters', colors: FRONTEND_MASTERS },
-  { paletteName: 'Rainbow', colors: RAINBOW },
-];
-
-const Home = ({ navigation }) => {
+const Home = ({ navigation, route }) => {
   const [colorPalettes, setColorPalettes] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const newPalette = route.params ? route.params.newPalette : null;
+
+  useEffect(() => {
+    if (newPalette) {
+      setColorPalettes((current) => [newPalette, ...current]);
+    }
+  }, [newPalette]);
 
   const handleFetchPalettes = useCallback(async () => {
     const response = await fetch(
@@ -28,7 +36,7 @@ const Home = ({ navigation }) => {
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
     await handleFetchPalettes();
-    setTimeout(() => setIsRefreshing(false), 2000);
+    setTimeout(() => setIsRefreshing(false), 1000);
   });
 
   useEffect(() => {
@@ -51,6 +59,15 @@ const Home = ({ navigation }) => {
           }}
         />
       )}
+      ListHeaderComponent={
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('AddNewPaletteModal', { colorPalettes })
+          }
+        >
+          <Text style={styles.text}>Add New Color Palette</Text>
+        </TouchableOpacity>
+      }
     />
   );
 };
@@ -59,6 +76,17 @@ const styles = StyleSheet.create({
   list: {
     backgroundColor: 'white',
     padding: 10,
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginHorizontal: 10,
+    marginTop: 5,
+    marginBottom: 16,
+    padding: 8,
+    backgroundColor: '#7aea7a',
+    borderRadius: 10,
+    textAlign: 'center',
   },
 });
 
