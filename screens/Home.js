@@ -1,23 +1,39 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+
+import PalettePreview from '../components/PalettePreview';
+
+import { SOLARIZED, RAINBOW, FRONTEND_MASTERS } from '../constants/colors';
+
+const COLOR_PALETTES = [
+  { paletteName: 'Solarized', colors: SOLARIZED },
+  { paletteName: 'Frontend Masters', colors: FRONTEND_MASTERS },
+  { paletteName: 'Rainbow', colors: RAINBOW },
+];
 
 const Home = ({ navigation }) => {
   return (
-    <View>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('ColorPalette');
-        }}
-      >
-        <Text
-          style={{ fontSize: 24, marginHorizontal: 16, marginVertical: 16 }}
-        >
-          Solarized
-        </Text>
-      </TouchableOpacity>
-    </View>
+    <FlatList
+      style={styles.list}
+      data={COLOR_PALETTES}
+      keyExtractor={(item) => item.paletteName}
+      renderItem={({ item }) => (
+        <PalettePreview
+          colorPalette={item}
+          handlePress={() => {
+            navigation.navigate('ColorPalette', item);
+          }}
+        />
+      )}
+    />
   );
 };
+
+const styles = StyleSheet.create({
+  list: {
+    backgroundColor: 'white',
+    padding: 10,
+  },
+});
 
 export default Home;
