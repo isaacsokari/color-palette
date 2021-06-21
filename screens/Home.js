@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  View,
   Text,
   FlatList,
   StyleSheet,
@@ -10,18 +9,25 @@ import {
 
 import PalettePreview from '../components/PalettePreview';
 
-import { SOLARIZED, RAINBOW, FRONTEND_MASTERS } from '../constants/colors';
-
 const Home = ({ navigation, route }) => {
   const [colorPalettes, setColorPalettes] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const newPalette = route.params ? route.params.newPalette : null;
+  const paletteToDelete = route.params ? route.params.paletteToDelete : null;
 
   useEffect(() => {
     if (newPalette) {
       setColorPalettes((current) => [newPalette, ...current]);
     }
   }, [newPalette]);
+
+  useEffect(() => {
+    if (paletteToDelete) {
+      setColorPalettes((current) =>
+        current.filter((palette) => palette.paletteName !== paletteToDelete),
+      );
+    }
+  }, [paletteToDelete, setColorPalettes]);
 
   const handleFetchPalettes = useCallback(async () => {
     const response = await fetch(

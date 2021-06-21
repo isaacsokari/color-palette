@@ -31,17 +31,18 @@ const AddNewPaletteModal = ({ navigation, route }) => {
 
   const handleSubmit = useCallback(() => {
     if (!paletteName) {
-      Alert.alert('Please add a name to your color palette');
+      Alert.alert('Invalid Name!', 'Please add a name to your color palette');
     } else if (
       route.params.colorPalettes.some(
         (palette) => palette.paletteName === paletteName.trim(),
       )
     ) {
       Alert.alert(
+        'Name Taken!',
         `A palette named "${paletteName}" already exists. Choose another name.`,
       );
     } else if (selectedColors.length < 3) {
-      Alert.alert('Please choose at least 3 colors');
+      Alert.alert('Insufficient Colors!', 'Please choose at least 3 colors');
     } else {
       navigation.navigate('Home', {
         newPalette: { paletteName: paletteName.trim(), colors: selectedColors },
