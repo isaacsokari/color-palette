@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import Clipboard from 'expo-clipboard';
 
 const styles = StyleSheet.create({
   text: {
@@ -34,11 +35,17 @@ const ColorBox = ({ colorName, hexCode }) => {
   };
 
   return (
-    <View style={[styles.textContainer, boxColor]}>
+    <TouchableOpacity
+      style={[styles.textContainer, boxColor]}
+      onPress={() => {
+        Clipboard.setString(hexCode);
+        Alert.alert('Copied', `Copied Hex Code - "${hexCode}" to clipboard.`);
+      }}
+    >
       <Text style={[styles.text, textColor]}>
         {colorName}: {hexCode}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 
